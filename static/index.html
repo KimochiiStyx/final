@@ -1,0 +1,119 @@
+<html>
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<style>
+		#class td
+		{  
+			vertical-align: middle;
+			text-align: center;  
+		}
+		</style>
+		<!-- Bootstrap CSS -->
+		<link href="dist/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="dist/css/flat-ui.css" rel="stylesheet">
+		<link href="docs/assets/css/demo.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	</head>
+	
+	<body>
+		<div class="row">
+			<div class=".col-md-6 .col-md-offset-3" style= "margin: 1cm 1cm 24pt">
+				<h2>Sign In<h2>
+			</div>
+		</div>
+		<!--align="center" style= "margin: 0cm 0cm 0pt; text-align: left"-->
+		<form class="form-horizontal" align="center">
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Username</label>
+				<div class="col-xs-4">
+					<input type="text" id="user" class="form-control" placeholder="col-xs-4" value="shy">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Password</label>
+				<div class="col-xs-4">
+					<input type="password" id="password" class="form-control" placeholder="col-xs-4" value="s1234567">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-offset-2 col-lg-2">
+					<select class="form-control" id="group">
+					  <option>Student</option>
+					  <option>Teacher</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-offset-2 col-lg-2">
+					<div id="id1" class="table table-hover">
+						<button onClick="authenticate()" class="btn btn-info">Login and list services</button>
+					</div>
+				</div>
+			</div>
+		</form>
+			
+		
+		<script>
+			function authenticate(){
+				var request = new XMLHttpRequest();
+				request.open("GET", "http://localhost:8000/courses", false);
+				var user_and_pass = document.getElementById("user").value + ":" + 
+									document.getElementById("password").value;
+				request.setRequestHeader("Authorization", "Basic " + btoa("e1601136:tGwPETZpRNZj"));
+				request.send();
+				var array = JSON.parse(request.responseText);
+				var text="<table>" + 
+						 "<tr><th>Course" + " " + "Code</th><th>Course Name</th><th>Language</th></tr>";
+				for(var i=0;i<array.length;i++){
+					var url = array[i].url;
+					text += "<tr><td>" + array[i].code + 
+							"</td><td>" + array[i].name + 
+							"</td><td>" + array[i].language +
+							"</td></tr>";
+				}
+				text += "</table>";
+				document.getElementById("id1").innerHTML= text;
+				
+			}
+			/*
+			function postPersons(){
+				var userName=document.getElementById("name");
+				var phoneNum=document.getElementById("phone");
+				var jsonData = '{"name":' + JSON.stringify(userName.value) + ',"phone":' + JSON.stringify(phoneNum.value) + '}';
+				var request = new XMLHttpRequest();
+				request.open("POST", "http://localhost:8000/persons/", false);
+				request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+				request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				request.send(jsonData);
+				location.reload();
+			}
+			
+			function putPersons(url){
+				alert(url);
+			}
+			function deletePersons(url){
+				var request = new XMLHttpRequest();
+				request.open("DELETE", url, false);
+				request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+				request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				request.send();
+				location.reload();
+			}
+			
+			function readCookie(name) {
+				var nameEQ = encodeURIComponent(name) + "=";
+				var ca = document.cookie.split(';');
+				for (var i = 0; i < ca.length; i++) {
+					var c = ca[i];
+					while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+						if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+				}
+				return null;
+			}*/
+		</script>
+	</body>
+</html> 

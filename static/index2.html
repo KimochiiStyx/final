@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<style>
+		#class td
+		{  
+			vertical-align: middle;
+			text-align: center;  
+		}
+		</style>
+		<!-- Bootstrap CSS -->
+		<link href="dist/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="dist/css/flat-ui.css" rel="stylesheet">
+		<link href="docs/assets/css/demo.css" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	</head>
+	
+	<body>
+		<div class="row">
+			<div class=".col-md-6 .col-md-offset-3" style= "margin: 1cm 1cm 24pt"> </div>
+		</div>
+		<h1 class="text-capitalize text-center">Sign In</h1>
+		<!--align="center" style= "margin: 0cm 0cm 0pt; text-align: left"-->
+		<form class="form-horizontal" align="center">
+			<div class="form-group">
+				<label class="col-sm-5 control-label">Username</label>
+				<div class="col-xs-4 col-lg-2 col-lg-offset-2">
+					<input type="text" id="user" class="form-control" placeholder="col-xs-4" value="shy">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-5 control-label">Password</label>
+				<div class="col-xs-4 col-lg-2 col-lg-offset-2">
+					<input type="password" id="password" class="form-control" placeholder="col-xs-4" value="s1234567">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-2 col-lg-offset-5">
+					<select class="form-control" id="group">
+						<option>Student</option>
+						<option>Teacher</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-offset-3 col-lg-6">
+					<div id="id1" class="table table-hover">
+						<button onClick="authenticate()" class="btn btn-info">Login and list services</button>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-7 col-lg-offset-3">
+					<div id="id2" class="table table-hover"></div>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="col-lg-7 col-lg-offset-3">
+					<div id="id3" class="table table-hover"></div>
+				</div>
+			</div>
+		</form>
+			
+		
+		<script>
+			function authenticate(){
+				
+				//text area
+				var courses = new Array(1);
+				//"<table>" + "<tr><th>Code</th><th>Course</th><th>Language</th><th>Credit</th></tr>";
+				getImplementation();
+				var ig = getIG();
+				var it = getIT();
+				for(var t=0;t<it.length;t++){
+					for(var g=0;g<ig.length;g++){
+						for(var i=0;i<implementation.length;i++){
+							var test=i+1;
+							courses[i] = getCourse(implementation[i].courseid) +
+										 //"<td>" + + "</td>" use in the future
+										 "<td>" + getGroup(ig[g].groupid) + "</td>"
+										 "<td>" + getTeacher(it[t].teacherid) + "</td>";
+						}
+						
+					}
+					//document.getElementById("id2").innerHTML = text2;
+					var text = "<table><tr><th>Code</th><th>Course</th><th>Language</th><th>Credit</th><th>Group(s)</th><th>Teacher(s)</th></tr>";
+					for(i=0;i<courses.length;i++){
+						text += "<tr>" + courses[i] + "</tr>";
+					}
+					text += "</table>";
+					//console.log(text);
+					document.getElementById("id1").innerHTML = text;
+				
+				}
+			
+			
+			function getImplementation()
+				var requestImplementation = new XMLHttpRequest();
+				requestImplementation.open("GET", "http://localhost:8000/implementations", false);
+				var user_and_pass = document.getElementById("user").value + ":" +  document.getElementById("password").value;
+				requestImplementation.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				requestImplementation.send();
+				var implementation = JSON.parse(requestImplementation.responseText);
+			}
+			
+			function getCourse(url){
+				var requestCourse = new XMLHttpRequest();
+				requestCourse.open("GET", url, false);
+				var user_and_pass = document.getElementById("user").value + ":" + 
+									document.getElementById("password").value;
+				requestCourse.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				requestCourse.send();
+				var course = JSON.parse(requestCourse.responseText);
+				var temp = "<td>" + course.code + "</td>"
+						   "<td>" + course.name + "</td>"
+						   "<td>" + course.language + "</td>"
+						   "<td>" + course.credit + "</td>";
+				return(temp)
+			}
+			
+			
+			
+			function getGroup(url){
+				var request = new XMLHttpRequest();
+				request.open("GET", url, false);
+				var user_and_pass = document.getElementById("user").value + ":" +  document.getElementById("password").value;
+				request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				request.send();
+				var array = JSON.parse(request.responseText);
+				return(array.groupcode);
+			}
+			
+			function getIG(){
+				var requestImplementationGroup = new XMLHttpRequest();
+				requestImplementationGroup.open("GET", "http://localhost:8000/implementationgroup", false);
+				var user_and_pass = document.getElementById("user").value + ":" +  document.getElementById("password").value;
+				requestImplementationGroup.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				requestImplementationGroup.send();
+				var ig = JSON.parse(requestImplementationGroup.responseText);
+				
+				return ig;
+			}
+			
+			function getIT(){
+				var requestImplementationTeacher = new XMLHttpRequest();
+				requestImplementationTeacher.open("GET", "http://localhost:8000/implementationteacher", false);
+				var user_and_pass = document.getElementById("user").value + ":" +  document.getElementById("password").value;
+				requestImplementationTeacher.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				requestImplementationTeacher.send();
+				var it = JSON.parse(requestImplementationTeacher.responseText);
+				return it;
+			}
+			
+			function getTeacher(url){
+				ar requestTeacher = new XMLHttpRequest();
+				request.open("GET", "http://localhost:8000/teachers", false);
+				var user_and_pass = document.getElementById("user").value + ":" + 
+									document.getElementById("password").value;
+				requestTeacher.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				requestTeacher.send();
+				var teachers = JSON.parse(requestTeacher.responseText);
+				return(teachers.firstname + " " + teachers.surname);
+			}
+			
+			/*
+			//These functions were used for deleting, editing and adding data in last assignment.
+			function postPersons(){
+				var userName=document.getElementById("name");
+				var phoneNum=document.getElementById("phone");
+				var jsonData = '{"name":' + JSON.stringify(userName.value) + ',"phone":' + JSON.stringify(phoneNum.value) + '}';
+				var request = new XMLHttpRequest();
+				request.open("POST", "http://localhost:8000/persons/", false);
+				request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+				request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				request.send(jsonData);
+				location.reload();
+			}
+			
+			function putPersons(url){
+				alert(url);
+			}
+			function deletePersons(url){
+				var request = new XMLHttpRequest();
+				request.open("DELETE", url, false);
+				request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+				request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+				request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				request.send();
+				location.reload();
+			}
+			
+			function readCookie(name) {
+				var nameEQ = encodeURIComponent(name) + "=";
+				var ca = document.cookie.split(';');
+				for (var i = 0; i < ca.length; i++) {
+					var c = ca[i];
+					while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+						if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+				}
+				return null;
+			}
+			*/
+		</script>
+	</body>
+</html> 
